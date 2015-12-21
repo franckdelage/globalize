@@ -13,7 +13,9 @@ module Globalize
       end
 
       def where(opts = :chain, *rest)
-        if opts == :chain
+        if block_given? and defined?(Squeel::DSL::eval)
+          super(Squeel::DSL.eval &Proc.new)
+        elsif opts == :chain
           WhereChain.new(spawn)
         elsif parsed = parse_translated_conditions(opts)
           join_translations(super(parsed, *rest))
